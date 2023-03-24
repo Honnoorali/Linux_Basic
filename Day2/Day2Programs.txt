@@ -1,0 +1,804 @@
+./a &
+./b &
+
+
+#include <stdio.h>
+#include <sys/stat.h>
+#include<sys/types.h>
+#include <unistd.h>
+#include <fcntl.h>
+
+void main()
+{
+	int fd,i;
+	char buf[100];
+	char buf2[2]={'\n'};
+	
+	fd=open("log.txt",O_RDWR);
+	
+	for(i=0;i<99;i++)
+	{
+		buf[i]='b';
+	}
+	
+	for(i=0;i<5;i++)
+	{
+		(void)write(fd,buf,99);
+		(void)write(fd,buf2,1);
+	}
+	printf("\n Program1 exited");
+}
+
+
+
+
+#include <stdio.h>
+#include <sys/stat.h>
+#include<sys/types.h>
+#include <unistd.h>
+#include <fcntl.h>
+
+void main()
+{
+	int fd,i;
+	char buf[100];
+	char buf2[2]={'\n'};
+	
+	fd=open("log.txt",O_RDWR);
+	
+	for(i=0;i<99;i++)
+	{
+		buf[i]='a';
+	}
+	
+	for(i=0;i<5;i++)
+	{
+		(void)write(fd,buf,99);
+		(void)write(fd,buf2,1);
+	}
+	printf("\n Program1 exited");
+}
+
+
+
+
+#include <stdio.h>
+
+//extern char *environ;
+extern char **environ;
+int main(int argc, char *argv[])
+{
+	char **ep;
+	//printf("%d",environ);
+	for(ep=environ;*ep!=NULL;ep++)
+	{
+		printf("\n (%s)",*ep);
+	}
+	return 0;
+}
+
+#include <stdio.h>
+#include<stdlib.h>
+
+int main()
+{
+	printf("Path: (%s)\n",getenv("PATH"));
+	printf("Logname: (%s)\n",getenv("LOGNAME"));
+	printf("cOLORTERM: (%s)\n",getenv("COLORTERM"));
+	return 0;
+}
+
+#include<stdio.h>
+#include<stdlib.h>
+//global variables
+
+void call_fun1(void);
+
+int main()
+{
+	putenv("PARAM1=1024");
+	printf("Path:(%s)\n",getenv("PATH"));
+	printf("HOME:(%s)\n",getenv("HOME"));
+	printf("Param1:(%s)\n",getenv("PARAM1"));
+	
+	call_func1();
+	return(0);
+}
+
+void call_func1(void)
+{
+	printf("Inside function call_func1:PARAM!:(%s)\n",getenv("PARAM1"));
+}
+
+#include <stdio.h>
+#include<string.h>
+
+int main(int argc, char *argv[])
+{
+	int count=0;
+	int sub,sum;
+	int arg0=atoi(argv[1]);
+	int arg1=atoi(argv[2]);
+	int arg2=atoi(argv[3]);
+	printf("\n Demonstrate the CMA");
+	printf("\n The value of argc is (%d)",argc);
+	
+	while(count<argc)
+	{
+		printf("\n %d The string is (%s)",count,argv[count]);
+		count++;
+	}
+	printf("%d",arg0);
+	if(arg0==0)
+	{
+		sum=arg1+arg2;
+		printf("%d and %d",arg1,arg2);
+		printf("\nAddition of two numbers %d",sum);
+	}
+	else if(arg0==1)
+	{
+		sub=arg1-arg2;
+		printf("\n sub of two numbers %d",sub);
+	}
+	return 0;
+}
+
+#include<stdio.h>
+#include<stdlib.h>
+
+void main()
+{
+	int *pint=NULL;
+	int count = 10;
+	
+	pint=(int *) malloc (7 * sizeof(int));
+	
+	if(pint == NULL)
+	{
+		printf("\n Malloc failed");
+		exit(-1);
+	}
+	
+	printf("\n Malloc success");
+	
+	for (count=0; count<7;count++)
+	{
+		pint[count]=count;
+	}
+	for(count=0;count<10;count++)
+	{
+		printf("\n print[%d]=(%d)",count,pint[count]);
+	}
+	
+	pint=(int *)realloc(pint,15 * sizeof(int));
+	if(pint==NULL)
+	{
+		printf("\n Realloc failed");
+		exit(-1);
+	}
+	
+	printf("\n After realloc\n");
+	
+	for(count=7;count<15;count++)
+	{
+		pint[count]=count;
+	}
+	for(count=0;count<15;count++)
+	{
+		printf("\npint[%d]=(%d)",count,pint[count]);
+	}
+}
+
+
+
+
+
+#include <stdio.h>
+
+//extern char *environ;
+extern char **environ;
+int main(int argc, char *argv[])
+{
+	char **ep;
+	//printf("%d",environ);
+	for(ep=environ;*ep!=NULL;ep++)
+	{
+		printf("\n (%s)",*ep);
+	}
+	return 0;
+}
+
+#include <stdio.h>
+#include<stdlib.h>
+
+int main()
+{
+	printf("Path: (%s)\n",getenv("PATH"));
+	printf("Logname: (%s)\n",getenv("LOGNAME"));
+	printf("cOLORTERM: (%s)\n",getenv("COLORTERM"));
+	return 0;
+}
+
+#include<stdio.h>
+#include<stdlib.h>
+//global variables
+
+void call_fun1(void);
+
+int main()
+{
+	putenv("PARAM1=1024");
+	printf("Path:(%s)\n",getenv("PATH"));
+	printf("HOME:(%s)\n",getenv("HOME"));
+	printf("Param1:(%s)\n",getenv("PARAM1"));
+	
+	call_func1();
+	return(0);
+}
+
+void call_func1(void)
+{
+	printf("Inside function call_func1:PARAM!:(%s)\n",getenv("PARAM1"));
+}
+
+#include <stdio.h>
+#include<string.h>
+
+int main(int argc, char *argv[])
+{
+	int count=0;
+	int sub,sum;
+	int arg0=atoi(argv[1]);
+	int arg1=atoi(argv[2]);
+	int arg2=atoi(argv[3]);
+	printf("\n Demonstrate the CMA");
+	printf("\n The value of argc is (%d)",argc);
+	
+	while(count<argc)
+	{
+		printf("\n %d The string is (%s)",count,argv[count]);
+		count++;
+	}
+	printf("%d",arg0);
+	if(arg0==0)
+	{
+		sum=arg1+arg2;
+		printf("%d and %d",arg1,arg2);
+		printf("\nAddition of two numbers %d",sum);
+	}
+	else if(arg0==1)
+	{
+		sub=arg1-arg2;
+		printf("\n sub of two numbers %d",sub);
+	}
+	return 0;
+}
+
+#include<stdio.h>
+#include<stdlib.h>
+
+void main()
+{
+	int *pint=NULL;
+	int count = 10;
+	
+	pint=(int *) malloc (7 * sizeof(int));
+	
+	if(pint == NULL)
+	{
+		printf("\n Malloc failed");
+		exit(-1);
+	}
+	
+	printf("\n Malloc success");
+	
+	for (count=0; count<7;count++)
+	{
+		pint[count]=count;
+	}
+	for(count=0;count<10;count++)
+	{
+		printf("\n print[%d]=(%d)",count,pint[count]);
+	}
+	
+	pint=(int *)realloc(pint,15 * sizeof(int));
+	if(pint==NULL)
+	{
+		printf("\n Realloc failed");
+		exit(-1);
+	}
+	
+	printf("\n After realloc\n");
+	
+	for(count=7;count<15;count++)
+	{
+		pint[count]=count;
+	}
+	for(count=0;count<15;count++)
+	{
+		printf("\npint[%d]=(%d)",count,pint[count]);
+	}
+}
+
+
+
+
+
+
+#include <stdio.h>
+
+//extern char *environ;
+extern char **environ;
+int main(int argc, char *argv[])
+{
+	char **ep;
+	//printf("%d",environ);
+	for(ep=environ;*ep!=NULL;ep++)
+	{
+		printf("\n (%s)",*ep);
+	}
+	return 0;
+}
+
+#include <stdio.h>
+#include<stdlib.h>
+
+int main()
+{
+	printf("Path: (%s)\n",getenv("PATH"));
+	printf("Logname: (%s)\n",getenv("LOGNAME"));
+	printf("cOLORTERM: (%s)\n",getenv("COLORTERM"));
+	return 0;
+}
+
+#include<stdio.h>
+#include<stdlib.h>
+//global variables
+
+void call_fun1(void);
+
+int main()
+{
+	putenv("PARAM1=1024");
+	printf("Path:(%s)\n",getenv("PATH"));
+	printf("HOME:(%s)\n",getenv("HOME"));
+	printf("Param1:(%s)\n",getenv("PARAM1"));
+	
+	call_func1();
+	return(0);
+}
+
+void call_func1(void)
+{
+	printf("Inside function call_func1:PARAM!:(%s)\n",getenv("PARAM1"));
+}
+
+#include <stdio.h>
+#include<string.h>
+
+int main(int argc, char *argv[])
+{
+	int count=0;
+	int sub,sum;
+	int arg0=atoi(argv[1]);
+	int arg1=atoi(argv[2]);
+	int arg2=atoi(argv[3]);
+	printf("\n Demonstrate the CMA");
+	printf("\n The value of argc is (%d)",argc);
+	
+	while(count<argc)
+	{
+		printf("\n %d The string is (%s)",count,argv[count]);
+		count++;
+	}
+	printf("%d",arg0);
+	if(arg0==0)
+	{
+		sum=arg1+arg2;
+		printf("%d and %d",arg1,arg2);
+		printf("\nAddition of two numbers %d",sum);
+	}
+	else if(arg0==1)
+	{
+		sub=arg1-arg2;
+		printf("\n sub of two numbers %d",sub);
+	}
+	return 0;
+}
+
+#include<stdio.h>
+#include<stdlib.h>
+
+void main()
+{
+	int *pint=NULL;
+	int count = 10;
+	
+	pint=(int *) malloc (7 * sizeof(int));
+	
+	if(pint == NULL)
+	{
+		printf("\n Malloc failed");
+		exit(-1);
+	}
+	
+	printf("\n Malloc success");
+	
+	for (count=0; count<7;count++)
+	{
+		pint[count]=count;
+	}
+	for(count=0;count<10;count++)
+	{
+		printf("\n print[%d]=(%d)",count,pint[count]);
+	}
+	
+	pint=(int *)realloc(pint,15 * sizeof(int));
+	if(pint==NULL)
+	{
+		printf("\n Realloc failed");
+		exit(-1);
+	}
+	
+	printf("\n After realloc\n");
+	
+	for(count=7;count<15;count++)
+	{
+		pint[count]=count;
+	}
+	for(count=0;count<15;count++)
+	{
+		printf("\npint[%d]=(%d)",count,pint[count]);
+	}
+}
+
+
+
+
+
+
+#include <stdio.h>
+
+//extern char *environ;
+extern char **environ;
+int main(int argc, char *argv[])
+{
+	char **ep;
+	//printf("%d",environ);
+	for(ep=environ;*ep!=NULL;ep++)
+	{
+		printf("\n (%s)",*ep);
+	}
+	return 0;
+}
+
+#include <stdio.h>
+#include<stdlib.h>
+
+int main()
+{
+	printf("Path: (%s)\n",getenv("PATH"));
+	printf("Logname: (%s)\n",getenv("LOGNAME"));
+	printf("cOLORTERM: (%s)\n",getenv("COLORTERM"));
+	return 0;
+}
+
+#include<stdio.h>
+#include<stdlib.h>
+//global variables
+
+void call_fun1(void);
+
+int main()
+{
+	putenv("PARAM1=1024");
+	printf("Path:(%s)\n",getenv("PATH"));
+	printf("HOME:(%s)\n",getenv("HOME"));
+	printf("Param1:(%s)\n",getenv("PARAM1"));
+	
+	call_func1();
+	return(0);
+}
+
+void call_func1(void)
+{
+	printf("Inside function call_func1:PARAM!:(%s)\n",getenv("PARAM1"));
+}
+
+#include <stdio.h>
+#include<string.h>
+
+int main(int argc, char *argv[])
+{
+	int count=0;
+	int sub,sum;
+	int arg0=atoi(argv[1]);
+	int arg1=atoi(argv[2]);
+	int arg2=atoi(argv[3]);
+	printf("\n Demonstrate the CMA");
+	printf("\n The value of argc is (%d)",argc);
+	
+	while(count<argc)
+	{
+		printf("\n %d The string is (%s)",count,argv[count]);
+		count++;
+	}
+	printf("%d",arg0);
+	if(arg0==0)
+	{
+		sum=arg1+arg2;
+		printf("%d and %d",arg1,arg2);
+		printf("\nAddition of two numbers %d",sum);
+	}
+	else if(arg0==1)
+	{
+		sub=arg1-arg2;
+		printf("\n sub of two numbers %d",sub);
+	}
+	return 0;
+}
+
+#include<stdio.h>
+#include<stdlib.h>
+
+void main()
+{
+	int *pint=NULL;
+	int count = 10;
+	
+	pint=(int *) malloc (7 * sizeof(int));
+	
+	if(pint == NULL)
+	{
+		printf("\n Malloc failed");
+		exit(-1);
+	}
+	
+	printf("\n Malloc success");
+	
+	for (count=0; count<7;count++)
+	{
+		pint[count]=count;
+	}
+	for(count=0;count<10;count++)
+	{
+		printf("\n print[%d]=(%d)",count,pint[count]);
+	}
+	
+	pint=(int *)realloc(pint,15 * sizeof(int));
+	if(pint==NULL)
+	{
+		printf("\n Realloc failed");
+		exit(-1);
+	}
+	
+	printf("\n After realloc\n");
+	
+	for(count=7;count<15;count++)
+	{
+		pint[count]=count;
+	}
+	for(count=0;count<15;count++)
+	{
+		printf("\npint[%d]=(%d)",count,pint[count]);
+	}
+}
+
+
+
+
+
+
+#include <stdio.h>
+
+//extern char *environ;
+extern char **environ;
+int main(int argc, char *argv[])
+{
+	char **ep;
+	//printf("%d",environ);
+	for(ep=environ;*ep!=NULL;ep++)
+	{
+		printf("\n (%s)",*ep);
+	}
+	return 0;
+}
+
+#include <stdio.h>
+#include<stdlib.h>
+
+int main()
+{
+	printf("Path: (%s)\n",getenv("PATH"));
+	printf("Logname: (%s)\n",getenv("LOGNAME"));
+	printf("cOLORTERM: (%s)\n",getenv("COLORTERM"));
+	return 0;
+}
+
+#include<stdio.h>
+#include<stdlib.h>
+//global variables
+
+void call_fun1(void);
+
+int main()
+{
+	putenv("PARAM1=1024");
+	printf("Path:(%s)\n",getenv("PATH"));
+	printf("HOME:(%s)\n",getenv("HOME"));
+	printf("Param1:(%s)\n",getenv("PARAM1"));
+	
+	call_func1();
+	return(0);
+}
+
+void call_func1(void)
+{
+	printf("Inside function call_func1:PARAM!:(%s)\n",getenv("PARAM1"));
+}
+
+#include <stdio.h>
+#include<string.h>
+
+int main(int argc, char *argv[])
+{
+	int count=0;
+	int sub,sum;
+	int arg0=atoi(argv[1]);
+	int arg1=atoi(argv[2]);
+	int arg2=atoi(argv[3]);
+	printf("\n Demonstrate the CMA");
+	printf("\n The value of argc is (%d)",argc);
+	
+	while(count<argc)
+	{
+		printf("\n %d The string is (%s)",count,argv[count]);
+		count++;
+	}
+	printf("%d",arg0);
+	if(arg0==0)
+	{
+		sum=arg1+arg2;
+		printf("%d and %d",arg1,arg2);
+		printf("\nAddition of two numbers %d",sum);
+	}
+	else if(arg0==1)
+	{
+		sub=arg1-arg2;
+		printf("\n sub of two numbers %d",sub);
+	}
+	return 0;
+}
+
+#include<stdio.h>
+#include<stdlib.h>
+
+void main()
+{
+	int *pint=NULL;
+	int count = 10;
+	
+	pint=(int *) malloc (7 * sizeof(int));
+	
+	if(pint == NULL)
+	{
+		printf("\n Malloc failed");
+		exit(-1);
+	}
+	
+	printf("\n Malloc success");
+	
+	for (count=0; count<7;count++)
+	{
+		pint[count]=count;
+	}
+	for(count=0;count<10;count++)
+	{
+		printf("\n print[%d]=(%d)",count,pint[count]);
+	}
+	
+	pint=(int *)realloc(pint,15 * sizeof(int));
+	if(pint==NULL)
+	{
+		printf("\n Realloc failed");
+		exit(-1);
+	}
+	
+	printf("\n After realloc\n");
+	
+	for(count=7;count<15;count++)
+	{
+		pint[count]=count;
+	}
+	for(count=0;count<15;count++)
+	{
+		printf("\npint[%d]=(%d)",count,pint[count]);
+	}
+}
+
+
+
+
+#include<stdio.h>
+#include<unistd.h>
+#include<sys/types.h>
+
+void main()
+{
+	printf("PID: %d",getpid());
+	printf("\nPPID: %d\n",getppid());
+	sleep(5);
+}
+
+
+
+
+
+
+
+
+#include <stdio.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+void main()
+{
+	int fd = open("log.txt",O_RDONLY | O_CREAT, 777);
+	int fd2 = open("log1.txt",O_RDONLY | O_CREAT, 777);
+	int fd3;
+	printf("%d\n",fd);
+	printf("%d\n",fd2);
+	close(fd);
+	fd3 = open("log2.txt",O_RDONLY | O_CREAT, 777);
+	printf("%d\n",fd);
+}
+
+
+
+
+
+
+
+#include <string.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <fcntl.h>
+#include <unistd.h>
+
+int main()
+{
+	int sz,seek_pos=0;
+	char buf[100];
+	 int fd=open("input.txt",O_RDWR);
+	 if(fd<0)
+	 {
+	 	perror("Error occured during open");
+	 	exit(1);
+	 }
+	 seek_pos=lseek(fd,0,SEEK_SET);
+	 printf("\n Initial offset position: (%d) \n", seek_pos);
+	 
+	 seek_pos=lseek(fd,2,SEEK_SET);
+	 printf("\n Offset position (%d) \n", seek_pos);
+	 
+	 seek_pos=lseek(fd,6,SEEK_CUR);
+	 printf("\n Offset position: (%d) \n", seek_pos);
+	 
+	 seek_pos=lseek(fd,0,SEEK_SET);
+	 printf("\n Offset position (%d) \n", seek_pos);
+	 
+	 sz=read(fd,buf,10);
+	 printf("\nRead bytes from file after lseek is=(%d)\n",sz);
+	 buf[sz]='\0';
+	 printf("Read bytes are as follows:\n%s\n",buf);
+	 
+	 seek_pos=lseek(fd,0,SEEK_END);
+	 printf("\n Offset position: (%d) \n", seek_pos);
+	 
+	 strcpy(buf,"New String appended after SEEK_END\n");
+	 sz=write(fd,buf,strlen(buf));
+	 printf("Appended the file");
+	 close(fd);	 
+}
+	 
+	  
