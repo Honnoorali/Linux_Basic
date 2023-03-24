@@ -1,0 +1,377 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<unistd.h>
+
+int main(int argc,char *argv[])
+{
+	int i;
+	printf("I am new program called by execl(), my pid is (%d)",getpid());
+	
+	printf("\n");
+	for(i=0;i<argc;i++)
+	{
+		printf("\n argv[%d]=(%s)\n",i,argv[i]);
+	}
+	return 0;
+}
+
+
+
+
+
+
+#include<stdio.h>
+#include<stdlib.h>
+#include<unistd.h>
+#include<signal.h>
+
+static void signal_handler(int signo)
+{
+	if(signo==SIGINT)
+		printf("Caught SIGINT\n");
+	else if(signo==SIGTERM)
+		printf("Caught SIGTERM\n");
+	exit(EXIT_SUCCESS);
+}
+
+int main()
+{
+	printf("\n Process ID is (%d)\n",getpid());
+	//if (signal(SIGINT, SIG_IGN )==SIG_ERR)
+	if (signal(SIGINT, SIG_DFL )==SIG_ERR)
+	{
+		fprintf(stderr,"Cannot handle SIGHUP!\n");
+		exit(-1);
+	}
+	//if (signal(SIGTERM,signal_handler)==SIG_ERR)
+	if (signal(SIGTERM,SIG_IGN)==SIG_ERR)
+	{
+		fprintf(stderr,"Cannot handle SIGHUP!\n");
+		exit(-1);
+	}
+	while(1);
+}
+
+
+
+
+
+#include<stdio.h>
+#include<stdlib.h>
+#include<unistd.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+int main()
+{
+	pid_t id;
+	int fd2;
+	char buf[100];
+	int sz,fd = open("log.txt",O_RDONLY | O_CREAT, 777);
+	strcpy(buf,"New String appended after Creating\n");
+	sz=write(fd,buf,strlen(buf));
+	
+	
+	printf("Parent Process: Execte by parent process before fork()-PID=(%d)\n",getpid());
+	id=fork();
+	if(id<0)
+	{
+		printf("\n Fork failed\n");
+		exit(-1);
+	}
+	if(id>0)
+	{
+		printf("\n Parent Process: I have created child process with ID =(%d)\n",id);
+		//printf("Parent Process: Execte by parent process before fork()-PID=(%d)\n",getpid());
+		sleep(5);
+	}
+	fd2=read("log.txt",buf,10);
+	printf("%s",fd2);
+}
+
+
+
+
+#include<stdio.h>
+#include<stdlib.h>
+#include<unistd.h>
+
+int main()
+{
+	printf("\n I am main process pid = (%d)\n",getpid());
+	execlv("./f1","arg1","arg2","arg3",NULL);
+	
+	printf("No use");
+	return 0;
+}
+
+
+
+
+
+#include<stdio.h>
+#include <stdlib.h>
+#include<unistd.h>
+#include<sys/wait.h>
+
+int main()
+{
+	pid_t cpid;
+	pid_t cpid2,ret_pid;
+	int status=0;
+	cpid=fork();
+	if(cpid==-1)
+		exit(-1);
+	
+	if(cpid==0)
+	{
+		printf("\n Child-1 executing its pid=(%d)\n",getpid());
+		sleep(5);
+		printf("child 1 terminated");
+		exit(0); //un success
+	}
+	
+	else
+	{
+		cpid2=fork();
+		if(cpid2==-1)
+		{
+			exit(-1);
+		}
+		if(cpid2 == 0)
+		{
+			printf("\n Child-2 executing its pid=(%d)\n",getpid());
+			sleep(10);
+			printf("child 2 terminated\n");
+			exit(1); //un success
+		}
+		
+		printf("\n Parent execting before wait() Parent pid is (%d)\n",getpid());
+		ret_pid=waitpid(cpid2,&status,WNOHANG);
+		if(ret_pid==-1)
+		{
+		perror("ERROR");
+		//printf("\n WAitpid returned error %d\n",errno);
+		}
+		printf("\n CPID returned is (%d)",ret_pid);
+		printf("\n Status is (%d)\n",status);
+		
+		//printf("\n Parent execting before wait() Parent pid is (%d)\n",getpid());
+		//ret_pid=waitpid(cpid,&status,WNOHANG);
+		//printf("\n CPID returned is (%d)\n",ret_pid);
+		//printf("\n Status is (%d)\n",status);
+		
+		printf("\n Parent exited\n");
+	}
+	return 0;
+}
+
+
+
+
+
+#include<stdio.h>
+#include <stdlib.h>
+#include<unistd.h>
+#include<sys/wait.h>
+
+int main()
+{
+	pid_t cpid;
+	pid_t cpid2,ret_pid;
+	int status=0;
+	cpid=fork();
+	if(cpid==-1)
+		exit(-1);
+	
+	if(cpid==0)
+	{
+		printf("\n Child-1 executing its pid=(%d)\n",getpid());
+		sleep(5);
+		printf("child 1 terminated");
+		exit(0); //un success
+	}
+	
+	else
+	{
+		cpid2=fork();
+		if(cpid2==-1)
+		{
+			exit(-1);
+		}
+		if(cpid2 == 0)
+		{
+			printf("\n Child-2 executing its pid=(%d)\n",getpid());
+			sleep(10);
+			printf("child 2 terminated\n");
+			exit(1); //un success
+		}
+		
+		printf("\n Parent execting before wait() Parent pid is (%d)\n",getpid());
+		ret_pid=waitpid(cpid2,&status,0);
+		printf("\n CPID returned is (%d)",ret_pid);
+		printf("\n Status is (%d)\n",status);
+		
+		//printf("\n Parent execting before wait() Parent pid is (%d)\n",getpid());
+		ret_pid=waitpid(cpid,&status,0);
+		printf("\n CPID returned is (%d)\n",ret_pid);
+		printf("\n Status is (%d)\n",status);
+		
+		printf("\n Parent exited\n");
+	}
+	return 0;
+}
+
+
+
+
+
+#include<stdio.h>
+#include <stdlib.h>
+#include<unistd.h>
+#include<sys/wait.h>
+
+int main()
+{
+	pid_t cpid;
+	pid_t cpid2;
+	int status=0;
+	cpid=fork();
+	if(cpid==-1)
+		exit(-1);
+	
+	if(cpid==0)
+	{
+		printf("\n Child-1 executing its pid=(%d)\n",getpid());
+		//sleep(3);
+		printf("child 1 terminated");
+		exit(0); //un success
+	}
+	
+	else
+	{
+		cpid2=fork();
+		if(cpid2==-1)
+		{
+			exit(-1);
+		}
+		if(cpid2 == 0)
+		{
+			printf("\n Child-2 executing its pid=(%d)\n",getpid());
+			//sleep(3);
+			printf("child 2 terminated\n");
+			exit(1); //un success
+		}
+		
+		printf("\n Parent execting before wait() Parent pid is (%d)\n",getpid());
+		cpid=wait(&status);
+		printf("\n CPID returned is (%d)",cpid);
+		printf("\n Status is (%d)\n",status);
+		
+		//printf("\n Parent execting before wait() Parent pid is (%d)\n",getpid());
+		cpid=wait(&status);
+		printf("\n CPID returned is (%d)\n",cpid);
+		printf("\n Status is (%d)\n",status);
+		
+		printf("\n Parent exited\n");
+	}
+	return 0;
+}
+
+
+
+
+
+#include<unistd.h>
+#include<stdlib.h>
+#include<stdio.h>
+#include<sys/wait.h>
+//Wait program
+
+int main()
+{
+	pid_t cpid;
+	int status=0;
+	cpid=fork();
+	if (cpid==-1)
+		exit(-1);
+		
+	if(cpid==0)
+	{
+		printf("\n Child executing first its pid=(%d)\n",getpid());
+		sleep(20);
+		printf("CHild pid=%d\n",getpid());
+		exit(1);
+	}
+	else
+	{
+		printf("\n Parent executing before wait()\n");
+		//cpid=wait(NULL);
+		cpid=wait(&status);
+		printf("\n Wait() in parent doe\n Parent pid=%d\n",getpid());
+		printf("\n CPID returned is (%d)\n",cpid);
+		printf("\n Status is %d \n ",status);
+	}
+	return 0;
+}
+
+
+
+#include<unistd.h>
+#include<stdlib.h>
+#include<stdio.h>
+
+static int gdata=111;
+
+int main(int argc, char *argv[])
+{
+	int istack=222;
+	pid_t childPid;
+	//Allocated in stack segment
+	
+	switch(childPid=fork())
+	{
+		case -1:printf("\n ERROR");
+			exit(-1);
+		case 0:printf("\n I am child process\n");
+			gdata *=3;
+			istack *=3;
+			printf("\n Pid=(%d), gdata=(%d), istack=(%d)\n",getpid(),gdata,istack);
+			sleep(2);
+			break;
+		default:printf("\n I am parent process\n");
+			printf("\n Pid=(%d), gdata=(%d), istack=(%d)\n",getpid(),gdata,istack);
+			sleep(2);
+			break;
+	}
+	exit(0);
+}
+#include<stdio.h>
+#include<stdlib.h>
+#include<unistd.h>
+// Fork program and parent and child process creation
+int main()
+{
+	pid_t id;
+	printf("Parent Process: Execte by parent process before fork()-PID=(%d)\n",getpid());
+	id=fork();
+	if(id<0)
+	{
+		printf("\n Fork failed\n");
+		exit(-1);
+	}
+	if(id>0)
+	{
+		printf("\n Parent Process: I have created child process with ID =(%d)\n",id);
+		printf("Parent Process: Execte by parent process before fork()-PID=(%d)\n",getpid());
+		//sleep(2);
+	}
+	else
+	{
+		printf("\n I am child process, Id value is (%d)\n",id);
+		printf("\n Child process, Id is (%d)\n",getpid());
+		printf("\n The creator of child process, Id (%d)\n",getppid());
+		printf("Parent Process: Execte by parent process before fork()-PID=(%d)\n",getpid());
+	}
+	return 0;
+}
