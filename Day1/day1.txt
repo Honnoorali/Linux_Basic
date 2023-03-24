@@ -1,0 +1,171 @@
+//Simple Hello world Printfing
+#include<stdio.h>
+void main()
+{
+printf("Hi sadashiv");
+}
+
+
+Write a program without using printf
+
+#include<stdio.h>
+#include<unistd.h>
+#include<string.h>
+
+void main()
+{
+	size_t len;
+	int msg_len=0;
+	char buf[100];
+	strncpy(buf,"This is write()",99);
+	msg_len=strlen(buf);
+	len=write(1,buf,msg_len);
+	printf(len);
+}
+
+
+//File Operations 1
+#include <stdio.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+void main()
+{
+	int fd = open("log.txt",O_RDONLY);	
+	printf("%d\n",fd);
+}
+
+
+
+
+//File Operations 2
+#include <stdio.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include<errno.h>
+
+void main()
+{
+	int fd;
+	//fd=open("newfile.log",O_RDWR | O_CREAT, S_IRWXU | S_IRWXG | S_IROTH);
+	fd=open("newfile12.log",O_RDWR);
+	//fd=open("newfile3.log",O_RDWR | O_CREAT, 00772);
+	//fd=open("newfile3.log",O_RDWR | O_CREAT | O_EXCL, 0772);
+	//fd=open("newfile3.log",O_RDWR | O_CREAT | O_EXCL, 772);
+	if(fd==-1)
+	{
+		printf("\n open() was failed %d \n",errno);
+		perror("ERROR:");
+	}
+	else
+	{
+		printf("Opend\n");
+	}
+}
+
+#include<stdio.h>
+#include<unistd.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <errno.h>
+int main()
+{
+	int fd, sz;
+	char buf[20]={0};
+	fd=open("content.txt",O_RDONLY);
+	if(fd<0)
+	{
+		perror("ERROR:");
+		//exit(1);
+	}
+	
+	sz=read(fd,buf,15);
+	printf("Call 1 - called read. fd=%d, %d bytes were read.\n",fd,sz);
+	buf[sz]='\0';
+	printf("Read bytes are as follows:\n<%s>\n",buf);
+	
+	printf("Continuos\n\n\n");
+	sz=read(fd,buf,11);
+	printf("Call 2 - called read. fd=%d, %d bytes were read.\n",fd,sz);
+	buf[sz]='\0';
+	printf("Read bytes are as follows:\n<%s>\n",buf);
+	
+	printf("Continuos\n\n\n");
+	sz=read(fd,buf,10);
+	printf("Call 3 - called read. fd=%d, %d bytes were read.\n",fd,sz);
+	buf[sz]='\0';
+	printf("Read bytes are as follows:\n<%s>\n",buf);
+	
+	printf("Continuos\n\n\n");
+	sz=read(fd,buf,10);
+	printf("Call 4 - called read. fd=%d, %d bytes were read.\n",fd,sz);
+	buf[sz]='\0';
+	printf("Read bytes are as follows:\n<%s>\n",buf);
+	
+	printf("Continuos\n\n\n");
+	sz=read(fd,buf,10);
+	printf("Call 5 - called read. fd=%d, %d bytes were read.\n",fd,sz);
+	buf[sz]='\0';
+	printf("Read bytes are as follows:\n<%s>\n",buf);
+	
+	if(sz==0)
+	{
+		printf("EOF\n");
+	}
+	close(fd);
+}
+
+
+
+#include<stdio.h>
+#include<unistd.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <errno.h>
+
+int main()
+{
+	int fd, sz;
+	char buf[100];
+	strcpy(buf," jwefbdjwnlc");
+	fd=open("content2.txt",O_WRONLY | O_APPEND);
+	if(fd<0)
+	{
+		perror("ERROR:");
+		exit(1);
+	}
+	printf("Length of buf id (%ld) \n",strlen(buf));
+	sz=write(fd,buf,strlen(buf));
+	printf("Write() returned %d\n", sz);
+	close(fd);
+}
+
+
+
+#include<stdio.h>
+#include<unistd.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <errno.h>
+#include<string.h>
+#include<malloc.h>
+int main()
+{
+	int fd, sz;
+	char buf[100];
+	strcpy(buf,"Simple file");
+	fd=open("content3.txt",O_WRONLY | O_CREAT | O_EXCL,0777);
+	if(fd<0)
+	{
+		perror("ERROR:");
+		exit(1);
+	}
+}
+
+
+
+
