@@ -1,0 +1,408 @@
+Program 1
+
+
+#include<stdlib.h>
+#include<unistd.h>
+
+int main()
+{
+	char s1[]="Hello Ali";
+	write(STDOUT_FILENO,s1,sizeof(s1)-1);
+	return 0;
+}
+
+
+Output
+
+Hello Ali
+
+
+
+
+
+Fig 1. Print the text without printf statement
+
+
+
+Program 2
+
+#include <string.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <fcntl.h>
+#include <unistd.h>
+
+int main()
+{
+	int w,fd,p=0;
+	char s[20];
+	fd=open("course.txt",O_RDWR);
+	if(fd<0)
+	{
+		perror("Error: File unable to open");
+		exit(1);
+	}
+	p=lseek(fd,81,SEEK_SET);
+	printf("\n Present offset position: (%d) \n", p);
+	strcpy(s,"King\n");
+	w=write(fd,s,strlen(s));
+	printf("Appended the file");
+	return 0;
+}
+
+
+Course.txt ----Content
+
+This is all about linux system programming. The instructor of this course is Mr. Ali
+
+Output ---- After Excution
+
+This is all about linux system programming. The instructor of this course is Mr. King
+
+Output---
+
+Present offset position: (81) 
+Appended the fileali
+
+Screenshot
+
+
+Fig 2, output for rename the content
+
+
+
+Program 3
+
+#include <stdio.h>
+#include <pthread.h>
+
+// Shared variables
+int available_tickets = 9;
+pthread_mutex_t lock;
+
+// Booking function
+void* book_tickets(void* arg) 
+{
+    int requested_tickets = *(int*)arg;
+    pthread_mutex_lock(&lock);
+    if (requested_tickets <= available_tickets) 
+    {
+        available_tickets -= requested_tickets;
+        printf("Successfully booked %d tickets.\n", requested_tickets);
+    } 
+    else 
+    {
+        printf("Sorry, only %d tickets available.\n", available_tickets);
+    }
+    pthread_mutex_unlock(&lock);
+    return NULL;
+}
+
+
+// Main function
+int main() 
+{
+    // Initialize mutex lock
+    pthread_mutex_init(&lock, NULL);
+
+    // Create threads for ticket booking
+    
+    pthread_t thread1, thread2,thread3;
+    int num_tickets;
+    int num_cancel;
+    int num_tickets2 = 7,num_tickets3=2;
+    while(1){
+    
+    printf("Welcome to Online Bus Ticket Booking\n");
+    printf("1. Booking\n");
+    printf("2. Cancel\n");
+    printf("Enter your choice: ");
+    int choice;
+    scanf("%d", &choice);
+    switch (choice) 
+    {
+    	case 1: {
+        	printf("Enter the number of ticets\n");
+        	scanf("%d",&num_tickets);
+        	pthread_create(&thread1, NULL, book_tickets, &num_tickets);
+        	break;
+    	}
+    	
+    	case 2: {
+        	printf("The list of tickets you booked\n");
+        	printf("%d",available_tickets);
+        	printf("\nEnter how many tickets you want to cancel:");
+        	scanf("%d",&num_cancel);
+        	printf("\nTicket are canceled,,,, Thank you\n");
+        	break;
+    	}
+    		
+    	default:
+        	printf("Invalid Input\n");
+        	break;
+    }
+    
+    
+    // Wait for threads to finish
+    pthread_join(thread1, NULL);
+    pthread_join(thread2, NULL);
+
+    // Destroy mutex lock
+    pthread_mutex_destroy(&lock);
+    }
+    return 0;
+}
+
+Output
+
+Welcome to Online Bus Ticket Booking
+1. Booking
+2. Cancel
+Enter your choice: 1
+Enter the number of ticets
+5
+Successfully booked 5 tickets.
+Welcome to Online Bus Ticket Booking
+1. Booking
+2. Cancel
+Enter your choice: 1
+Enter the number of ticets
+5
+Sorry, only 4 tickets available.
+Welcome to Online Bus Ticket Booking
+1. Booking
+2. Cancel
+Enter your choice: 2
+The list of tickets you booked
+4
+Enter how many tickets you want to cancel:2
+
+Ticket are canceled,,,, Thank you
+Welcome to Online Bus Ticket Booking
+1. Booking
+2. Cancel
+Enter your choice: 1
+Enter the number of ticets
+4
+Successfully booked 4 tickets.
+Welcome to Online Bus Ticket Booking
+1. Booking
+2. Cancel
+Enter your choice: 
+
+
+Screenshot
+
+Fig 3, Output for booking tickets
+
+
+Project
+
+#include <stdio.h>
+#include <string.h>
+
+#define MAX_CLIENTS 100 // Number of clients in the Route Management Table
+
+struct Client 
+{
+    char ip_address[50];
+    char gateway[16];
+    char name[50];
+};
+
+struct Client clients[MAX_CLIENTS]; // array
+
+int num_clients = 0; // current number of clients in the array
+
+// Add a new client 
+void add_client(char* ip_address, char* gateway, char* name) 
+{
+    if (num_clients < MAX_CLIENTS) 
+    {
+        strcpy(clients[num_clients].ip_address, ip_address);
+        strcpy(clients[num_clients].gateway, gateway);
+        strcpy(clients[num_clients].name, name);
+        num_clients++;
+        printf("Client added successfully.\n");
+    } 
+    else 
+    {
+        printf("Route management table is full.\n");
+    }
+}
+
+// Update an existing client
+void update_client(char* ip_address, char* gateway, char* name) 
+{
+    int i;
+    for (i = 0; i < num_clients; i++) 
+    {
+        if (ip_address == ip_address) 
+        {
+            strcpy(clients[i].gateway, gateway);
+            strcpy(clients[i].name, name);
+            printf("Client updated successfully.\n");
+            return;
+        }
+    }
+    printf("Client with ID %s not found.\n", ip_address);
+}
+
+// Delete an existing client 
+void delete_client(char* ip_address) 
+{
+    int i;
+    for (i = 0; i < num_clients; i++) 
+    {
+        if (ip_address == ip_address) 
+        {
+            clients[i] = clients[num_clients - 1];
+            num_clients--;
+            printf("Client deleted successfully.\n");
+            return;
+        }
+    }
+    printf("Client with ID %s not found.\n", ip_address);
+}
+
+// function to display the current list of clients in the array
+void display_clients() {
+    int i;
+    printf("Current list of clients:\n");
+    for (i = 0; i < num_clients; i++) {
+        printf("IP_Address: %s, GATEWAY: %s, OIF: %s\n", clients[i].ip_address, clients[i].gateway, clients[i].name);
+    }
+}
+
+int main() {
+    // sample usage of the functions
+    
+    while(1){
+    printf("Routing Management Table\n");
+    printf("1. Create\n");
+    printf("2. Update\n");
+    printf("3. Delete\n");
+    printf("4. Display\n");
+    printf("Enter your choice: ");
+    int choice;
+    scanf("%d", &choice);
+    int c=0;
+    switch (choice) 
+    {
+    	case 1: {
+        	add_client("192.168.1.1", "10.1.1.1", "Ethernet 1");
+        	break;
+    	}
+    	
+    	case 2: {
+        	update_client("192.168.1.1", "10.1.2.1", "Ethernet 2");
+        	break;
+    	}
+    	
+    	case 3: {
+        	delete_client("192.168.1.1");
+        	break;
+    	}
+    	
+    	case 4:	{
+    		display_clients();
+    		break;
+    	}
+    	
+    	default:
+        	printf("Invalid Input\n");
+        	break;
+    }
+    //add_client(1, "Client 1", "192.168.0.1");
+    //add_client(2, "Client 2", "192.168.0.2");
+    //display_clients();
+    //update_client(1, "Client 1 Updated", "192.168.0.3");
+    //display_clients();
+    //delete_client(2);
+    //display_clients();
+    
+    }
+    return 0;
+}
+
+
+Output
+
+Routing Management Table
+1. Create
+2. Update
+3. Delete
+4. Display
+Enter your choice: 1
+Client added successfully.
+Routing Management Table
+1. Create
+2. Update
+3. Delete
+4. Display
+Enter your choice: 1
+Client added successfully.
+Routing Management Table
+1. Create
+2. Update
+3. Delete
+4. Display
+Enter your choice: 2
+Client updated successfully.
+Routing Management Table
+1. Create
+2. Update
+3. Delete
+4. Display
+Enter your choice: 4
+Current list of clients:
+IP_Address: 192.168.1.1, GATEWAY: 10.1.2.1, OIF: Ethernet 2
+IP_Address: 192.168.1.1, GATEWAY: 10.1.1.1, OIF: Ethernet 1
+Routing Management Table
+1. Create
+2. Update
+3. Delete
+4. Display
+Enter your choice: 3
+Client deleted successfully.
+Routing Management Table
+1. Create
+2. Update
+3. Delete
+4. Display
+Enter your choice: 1
+Client added successfully.
+Routing Management Table
+1. Create
+2. Update
+3. Delete
+4. Display
+Enter your choice: 4
+Current list of clients:
+IP_Address: 192.168.1.1, GATEWAY: 10.1.1.1, OIF: Ethernet 1
+IP_Address: 192.168.1.1, GATEWAY: 10.1.1.1, OIF: Ethernet 1
+Routing Management Table
+1. Create
+2. Update
+3. Delete
+4. Display
+Enter your choice:
+
+
+
+
+Screenshot
+
+
+Fig 4, Output for Project with creation of RMT
+
+
+
+
+
+Fig 5, Output for complete application
+
+
+
+
+
