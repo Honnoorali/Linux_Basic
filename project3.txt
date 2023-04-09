@@ -1,0 +1,440 @@
+server
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/socket.h>
+#include <sys/types.h>
+#include <arpa/inet.h>
+#include <unistd.h>
+#include <string.h>
+
+#define PORT 8080
+#define MAX_CLIENTS 10
+
+// Struct to hold router information
+struct Router {
+    char name[50];
+    char ip[16];
+    char mac[18];
+    int status;
+};
+
+// Router management table
+struct Router routers[50];
+int num_routers = 0;
+
+// Function to handle client requests
+void handle_client(int client_socket) {
+    char buffer[1024] = {0};
+    char response[1024] = {0};
+
+    // Receive client request
+    int bytes_received = recv(client_socket, buffer, 1024, 0);
+
+    if (bytes_received == 0) {
+        printf("Client disconnected\n");
+        return;
+    }
+
+    // Parse client request
+    int operation;
+    char name[50], ip[16], mac[18];
+    sscanf(buffer, "%d %s %s %s", &operation, name, ip, mac);
+
+    // Handle client request
+    switch (operation) {
+        case 1: // Create
+            // Add new router to table
+            strcpy(routers[num_routers].name, name);
+            strcpy(routers[num_routers].ip, ip);
+            strcpy(routers[num_routers].mac, mac);
+            routers[num_routers].status = 1;
+            num_routers++;
+
+            // Send response to client
+            sprintf(response, "Router %s added to table\n", name);
+            send(client_socket, response, strlen(response), 0);
+            break;
+        case 2: // Update
+            // Find router in table and update its information
+            for (int i = 0; i < num_routers; i++) {
+                if (strcmp(routers[i].name, name) == 0) {
+                    strcpy(routers[i].ip, ip);
+                    strcpy(routers[i].mac, mac);
+                    routers[i].status = 1;
+
+                    // Send response to client
+                    sprintf(response, "Router %s updated\n", name);
+                    send(client_socket, response, strlen(response), 0);
+                    return;
+                }
+            }
+
+            // If router not found, send error response to client
+            sprintf(response, "Router %s not found\n", name);
+            send(client_socket, response, strlen(response), 0);
+            break;
+        case 3: // Delete
+            // Find router in table and remove it
+            for (int i = 0; i < num_routers; i++) {
+                if (strcmp(routers[i].name, name) == 0) {
+                    for (int j = i; j < num_routers - 1; j++) {
+                        routers[j] = routers[j+1];
+                    }
+                    num_routers--;
+
+                    // Send response to client
+                    sprintf(response, "Router %s deleted from table\n", name);
+                    send(client_socket, response, strlen(response), 0);
+                    return;
+                }
+            }
+
+            // If router not found, send error response to client
+            sprintf(response, "Router %s not found\n", name);
+            send(client_socket, response, strlen(response), 0);
+            break;
+        default:
+            // If invalid operation, send error response to client
+            sprintf(response, "Invalid operation\n");
+            send(client_socket, response, strlen(response), 0);
+            break;
+    }
+}
+
+int main(int
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#include <stdio.h>
+#include <string.h>
+
+#define MAX_CLIENTS 100 // maximum number of clients in the route management table
+
+struct Client {
+    int id;
+    char name[50];
+    char ip_address[16];
+};
+
+struct Client clients[MAX_CLIENTS]; // array to store clients
+
+int num_clients = 0; // current number of clients in the array
+
+// function to add a new client to the array
+void add_client(int id, char* name, char* ip_address) {
+    if (num_clients < MAX_CLIENTS) {
+        clients[num_clients].id = id;
+        strcpy(clients[num_clients].name, name);
+        strcpy(clients[num_clients].ip_address, ip_address);
+        num_clients++;
+        printf("Client added successfully.\n");
+    } else {
+        printf("Route management table is full.\n");
+    }
+}
+
+// function to update an existing client in the array
+void update_client(int id, char* name, char* ip_address) {
+    int i;
+    for (i = 0; i < num_clients; i++) {
+        if (clients[i].id == id) {
+            strcpy(clients[i].name, name);
+            strcpy(clients[i].ip_address, ip_address);
+            printf("Client updated successfully.\n");
+            return;
+        }
+    }
+    printf("Client with ID %d not found.\n", id);
+}
+
+// function to delete an existing client from the array
+void delete_client(int id) {
+    int i;
+    for (i = 0; i < num_clients; i++) {
+        if (clients[i].id == id) {
+            clients[i] = clients[num_clients - 1];
+            num_clients--;
+            printf("Client deleted successfully.\n");
+            return;
+        }
+    }
+    printf("Client with ID %d not found.\n", id);
+}
+
+// function to display the current list of clients in the array
+void display_clients() {
+    int i;
+    printf("Current list of clients:\n");
+    for (i = 0; i < num_clients; i++) {
+        printf("ID: %d, Name: %s, IP Address: %s\n", clients[i].id, clients[i].name, clients[i].ip_address);
+    }
+}
+
+int main() {
+    // sample usage of the functions
+    add_client(1, "Client 1", "192.168.0.1");
+    add_client(2, "Client 2", "192.168.0.2");
+    display_clients();
+    update_client(1, "Client 1 Updated", "192.168.0.3");
+    display_clients();
+    delete_client(2);
+    display_clients();
+    return 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/ipc.h>
+#include <sys/shm.h>
+
+#define MAX_CLIENTS 10
+
+struct client_data {
+    int id;
+    char name[20];
+    char ip_address[20];
+};
+
+struct router_table {
+    int num_clients;
+    struct client_data clients[MAX_CLIENTS];
+};
+
+int main() {
+    key_t key = ftok("router_table", 'R');
+    int shmid = shmget(key, sizeof(struct router_table), IPC_CREAT | 0666);
+    struct router_table *table = shmat(shmid, NULL, 0);
+    
+    int choice;
+    do {
+        printf("\nRouter Management Table\n");
+        printf("=======================\n");
+        printf("1. Add a client\n");
+        printf("2. Update a client\n");
+        printf("3. Remove a client\n");
+        printf("4. View all clients\n");
+        printf("5. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+        
+        switch (choice) {
+            case 1: {
+                if (table->num_clients < MAX_CLIENTS) {
+                    printf("\nEnter client ID: ");
+                    scanf("%d", &table->clients[table->num_clients].id);
+                    printf("Enter client name: ");
+                    scanf("%s", table->clients[table->num_clients].name);
+                    printf("Enter client IP address: ");
+                    scanf("%s", table->clients[table->num_clients].ip_address);
+                    table->num_clients++;
+                    printf("\nClient added successfully!\n");
+                } else {
+                    printf("\nError: Maximum number of clients reached.\n");
+                }
+                break;
+            }
+            case 2: {
+                int id;
+                printf("\nEnter client ID to update: ");
+                scanf("%d", &id);
+                int i;
+                for (i = 0; i < table->num_clients; i++) {
+                    if (table->clients[i].id == id) {
+                        printf("Enter new name for client %d: ", id);
+                        scanf("%s", table->clients[i].name);
+                        printf("Enter new IP address for client %d: ", id);
+                        scanf("%s", table->clients[i].ip_address);
+                        printf("\nClient %d updated successfully!\n", id);
+                        break;
+                    }
+                }
+                if (i == table->num_clients) {
+                    printf("\nError: Client with ID %d not found.\n", id);
+                }
+                break;
+            }
+            case 3: {
+                int id;
+                printf("\nEnter client ID to remove: ");
+                scanf("%d", &id);
+                int i;
+                for (i = 0; i < table->num_clients; i++) {
+                    if (table->clients[i].id == id) {
+                        table->num_clients--;
+                        for (; i < table->num_clients; i++) {
+                            table->clients[i] = table->clients[i+1];
+                        }
+                        printf("\nClient %d removed successfully!\n", id);
+                        break;
+                    }
+                }
+                if (i == table->num_clients) {
+                    printf("\nError: Client with ID %d not found.\n", id);
+                }
+                break;
+            }
+            case 4: {
+                printf("\nRouter Management Table\n");
+                printf("=======================\n");
+                printf("Number of clients: %d\n", table->num_clients);
+                printf("ID\tName\tIP Address
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+client.c
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/ipc.h>
+#include <sys/msg.h>
+#include <unistd.h>
+
+struct message_buffer {
+    long message_type;
+    char message[100];
+};
+
+int main() {
+    key_t key;
+    int msgid;
+    struct message_buffer message;
+
+    // Generate key for message queue
+    key = ftok("client-server", 65);
+
+    // Create message queue
+    msgid = msgget(key, 0666 | IPC_CREAT);
+
+    printf("Routing Management Table\n");
+    printf("1. Create\n");
+    printf("2. Update\n");
+    printf("3. Delete\n");
+    printf("Enter your choice: ");
+
+    // Read user choice
+    fgets(message.message, sizeof(message.message), stdin);
+
+    // Set message type to 1
+    message.message_type = 1;
+
+    // Send message to server
+    msgsnd(msgid, &message, sizeof(message), 0);
+
+    // Receive response from server
+    msgrcv(msgid, &message, sizeof(message), 2, 0);
+
+    printf("Server response: %s\n", message.message);
+
+    // Destroy message queue
+    msgctl(msgid, IPC_RMID, NULL);
+
+    return 0;
+}
+
+
+
+server.c
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/ipc.h>
+#include <sys/msg.h>
+#include <unistd.h>
+
+struct message_buffer {
+    long message_type;
+    char message[100];
+};
+
+int main() {
+    key_t key;
+    int msgid;
+    struct message_buffer message;
+
+    // Generate key for message queue
+    key = ftok("client-server", 65);
+
+    // Create message queue
+    msgid = msgget(key, 0666 | IPC_CREAT);
+
+    // Listen for messages
+    while (1) {
+        // Receive message from client
+        msgrcv(msgid, &message, sizeof(message), 1, 0);
+
+        // Process message
+        switch (atoi(message.message)) {
+            case 1:
+                printf("Create operation selected by client\n");
+                strcpy(message.message, "Create operation successful");
+                break;
+            case 2:
+                printf("Update operation selected by client\n");
+                strcpy(message.message, "Update operation successful");
+                break;
+            case 3:
+                printf("Delete operation selected by client\n");
+                strcpy(message.message, "Delete operation successful");
+                break;
+            default:
+                strcpy(message.message, "Invalid choice");
+                break;
+        }
+
+        // Set message type to 2
+        message.message_type = 2;
+
+        // Send response to client
+        msgsnd(msgid, &message, sizeof(message), 0);
+    }
+
+    // Destroy message queue
+    msgctl(msgid, IPC_RMID, NULL);
+
+    return 0;
+}
+
+
