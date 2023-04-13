@@ -1,0 +1,330 @@
+
+//first assignment 
+
+#include<unistd.h>
+
+int main()
+{
+	char buff[20];
+	read(0,buff,20);
+	write(1,buff,20);
+	return 0;
+}
+
+//output
+sadashiv@sadashiv-VirtualBox:~/linux Assingment$ ./l
+well done 
+well done 
+
+
+
+
+//second
+
+#include <unistd.h>
+#include<sys/types.h>
+#include<fcntl.h>
+#include<stdio.h>
+
+int main()
+{
+	char buff[20]="bante";
+	int fd=open("input.txt",O_RDWR);
+	lseek(fd,-8,SEEK_END);
+	write(fd,buff,7);
+	}
+  
+  //output
+  //opened the file and edited at last
+  
+  input.txt
+  im here to check the lseek functionbante
+  
+  
+  
+  //Third 
+  
+ #include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+#include<pthread.h>
+#include<unistd.h>
+
+pthread_mutex_t mtx=PTHREAD_MUTEX_INITIALIZER;
+
+void *reservation(void * temp1);
+int movie(void);
+int choice(void);
+void *cancel(void *seat);
+int cmovie(void);
+
+int count=0;
+int price=200;
+int id=100;
+
+struct moviedetails
+{
+	char name[20];
+	int seat_no;
+	int id_no;
+}person[100];
+
+struct temp
+{
+	int seat[5];
+	int select;
+	}temp1;
+	
+int main()
+{
+	int **seat,j;
+	seat=(int **)calloc(101,sizeof(int *));
+	for(j=0;j<3;j++)
+		*(seat+j)=(int *)calloc(101,sizeof(int));
+		
+	int n,select,ch;
+	
+	while(n!=3)
+	{
+		ch=choice();
+		
+		switch(ch)
+		{
+		  case 1:
+		  	select=movie();
+		  	temp1.seat[select-1];
+		  	temp1.select=select;
+		  	pthread_t pthreadA;
+		  	pthread_create(&pthreadA,NULL,reservation,(void*)&temp1);
+		  	pthread_join(pthreadA,NULL);
+		  break;
+		  
+		  case 2:
+		  	select=cmovie();
+		  	temp1.seat[select-1];
+		  	pthread_t pthreadB;
+		  	pthread_create(&pthreadB,NULL,cancel,(void*)&temp1);
+		  	pthread_join(pthreadB,NULL);
+		  break;
+		  
+		  case 3:
+		  	n=3;
+		  break;
+		  }
+	}
+}
+	
+int choice(void)
+{
+	int ch;
+	printf("movie ticket booking system  \n");
+	printf("\n");
+	printf("press 1 to purchase ticket\n");
+	printf("press 2 to cancel ticket \n");
+	printf("press 3 to exit\n");
+	printf("\n");
+	scanf("%d",&ch);
+	return ch;
+	
+	}
+	
+int movie(void)
+{	
+	int i;
+	printf("please select the movie  \n");
+	
+	printf("press 1 for xyz movie\n");
+	printf("press 2 for abc  \n");
+	printf("press 3 for 123 movie  \n");
+	
+	scanf("%d",&i);
+	return i;
+	
+	}
+	
+	
+void *reservation(void * temp1)
+{
+	int i;
+	struct temp *temp2;
+	temp2=(struct temp*)temp1;
+	printf("enter you name \n");
+	
+	pthread_mutex_lock(&mtx);
+	
+	scanf("%s",person[count].name);
+	
+	check:
+	
+		printf("enter the seat no you want\n");
+		scanf("%d",&i);
+		
+	int *array=temp2->seat;
+	
+	if(array[i]==1)
+	{
+		printf("seat is unavailable \n");
+		goto check;
+		
+	}
+	
+	else
+	{
+		array[i]=1;
+		}
+		
+	person[count].seat_no=i;
+	if((temp2->select)==1)
+	{
+		person[count].id_no=id;
+		printf("show name          : xyz\n");
+		printf("Booking ID         : %d\n",id);
+		printf("customer name      : %s\n",person[count].name);
+		printf("seat number        : %d\n",person[count].seat_no);
+		printf("price              : %d\n",price);
+	}
+	if((temp2->select)==2)
+	{
+		person[count].id_no=id;
+		printf("show name          : abc\n");
+		printf("Booking ID         : %d\n",id);
+		printf("customer name      : %s\n",person[count].name);
+		printf("seat number        : %d\n",person[count].seat_no);
+		printf("price              : %d\n",price);
+		
+	}
+	
+	if((temp2->select)==3)
+	{
+		person[count].id_no=id;
+		printf("show name          : 123\n");
+		printf("Booking ID         : %d\n",id);
+		printf("customer name      : %s\n",person[count].name);
+		printf("seat number        : %d\n",person[count].seat_no);
+		printf("price              : %d\n",price);
+		
+	}
+	
+	count++;
+	id++;
+	pthread_mutex_unlock(&mtx);
+	
+	}
+	
+int cmovie(void)
+{
+
+
+	int i;
+	printf(" please  select the movie u want to cancel \n");
+	printf("press 1 for xyz movie \n");
+	printf("press 2 for abc movie \n");
+	printf(" press 3 for 123 movie \n");
+	scanf("%d",&i);
+	return i;
+	
+	}
+	
+void *cancel(void *temp1)
+{
+	int cseat,stop;
+	struct temp *temp2;
+	temp2=(struct temp*)temp1;
+	int *array=temp2->seat;
+	printf("enter your id number \n");
+	scanf("%d",&cseat);
+	for (int j=0; j<100; j++)
+	{
+		if(person[j].id_no==cseat)
+		{
+			pthread_mutex_lock(&mtx);
+			
+			stop=1;
+			array[person[j].seat_no]=0;
+			j=100;
+			pthread_mutex_unlock(&mtx);
+			}
+		}
+		
+	if(stop!=1)
+	{
+		printf("please enter a valid id number!\n");
+	}
+}
+		
+    
+ //output   
+    
+sadashiv@sadashiv-VirtualBox:~/linux Assingment$ gedit three.c
+sadashiv@sadashiv-VirtualBox:~/linux Assingment$ gcc three.c -o l
+sadashiv@sadashiv-VirtualBox:~/linux Assingment$ ./l
+movie ticket booking system  
+
+press 1 to purchase ticket
+press 2 to cancel ticket 
+press 3 to exit
+
+1
+please select the movie  
+press 1 for xyz movie
+press 2 for abc  
+press 3 for 123 movie  
+2
+enter you name 
+Sada
+enter the seat no you want
+5
+show name          : xyz
+Booking ID         : 100
+customer name      : Sada
+seat number        : 5
+price              : 200
+movie ticket booking system  
+
+press 1 to purchase ticket
+press 2 to cancel ticket 
+press 3 to exit
+
+
+
+//fourth project
+
+
+
+
+
+		
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
