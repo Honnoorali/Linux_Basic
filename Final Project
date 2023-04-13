@@ -299,5 +299,124 @@ int main() {
 
 
 
+Output
+
+Enter client name: ali
+Data sent to server
+<------WELCOME---------->
+
+Routing Management Table
+1. Create
+2. Update
+3. Delete
+4. Display
+Enter your choice: 1
+Enter IP address:
+192.168.1.1
+Enter Gateway address:
+10.1.1.1
+Enter OIF:
+router
+Client added successfully.
+
+Data sent to server
+<------WELCOME---------->
+
+Routing Management Table
+1. Create
+2. Update
+3. Delete
+4. Display
+Enter your choice: 1
+Enter IP address:
+192.1.100.111
+Enter Gateway address:
+10.2.1.1
+Enter OIF:
+Ethernet
+Client added successfully.
+
+Data sent to server
+<------WELCOME---------->
+
+Routing Management Table
+1. Create
+2. Update
+3. Delete
+4. Display
+Enter your choice: 4
+
+Number of CLients are: 2
+Current list of clients:
+IP_Address: 192.168.1.1, GATEWAY: 10.1.1.1, OIF: router
+
+IP_Address: 192.1.100.111, GATEWAY: 10.2.1.1, OIF: Ethernet
+
+Data sent to server
+<------WELCOME---------->
+
+Routing Management Table
+1. Create
+2. Update
+3. Delete
+4. Display
+Enter your choice: 2
+Enter Which IP Address want to update:
+192.168.1.1
+Client updated successfully.
+
+Data sent to server
+<------WELCOME---------->
+
+Routing Management Table
+1. Create
+2. Update
+3. Delete
+4. Display
+Enter your choice: 4
+
+Number of CLients are: 2
+Current list of clients:
+IP_Address: 192.168.1.1, GATEWAY: 10.1.2.1, OIF: Ethernet 2
+
+IP_Address: 192.1.100.111, GATEWAY: 10.2.1.1, OIF: Ethernet
+
+Data sent to server
+<------WELCOME---------->
+
+Routing Management Table
+1. Create
+2. Update
+3. Delete
+4. Display
+Enter your choice: 3
+Enter Which Client wants to delete (IP_Address):
+192.168.1.1
+Client deleted successfully.
+
+Data sent to server
+<------WELCOME---------->
+
+Routing Management Table
+1. Create
+2. Update
+3. Delete
+4. Display
+Enter your choice: 4
+
+Number of CLients are: 1
+Current list of clients:
+IP_Address: 192.1.100.111, GATEWAY: 10.2.1.1, OIF: Ethernet
+
+Data sent to server
+<------WELCOME---------->
+
+Routing Management Table
+1. Create
+2. Update
+3. Delete
+4. Display
+Enter your choice:
+
 
 
