@@ -289,6 +289,180 @@ press 3 to exit
 
 //fourth project
 
+#include <stdio.h>
+#include <string.h>  
+#define MAX_CLIENTS 100 // Number of clients in the Route Management Table 
+struct Client {   
+   char ip_address[50];  
+   char gateway[16];   
+   char name[50];
+    };  
+     
+struct Client clients[MAX_CLIENTS];
+// array   
+int num_clients = 0; 
+// current number of clients in the array  
+// Add a new client 
+
+void add_client(char* ip_address, char* gateway, char* name) 
+     {    
+     if (num_clients < MAX_CLIENTS)   
+       {     strcpy(clients[num_clients].ip_address, ip_address);  
+             strcpy(clients[num_clients].gateway, gateway);     
+             strcpy(clients[num_clients].name, name);      
+             num_clients++;      
+             printf("Client added successfully.\n");    }    
+                     
+     else     {      
+             printf("Route management table is full.\n");    }
+     } 
+                          
+// Update an existing client
+void update_client(char* ip_address, char* gateway, char* name) 
+     {    
+     	int i;   
+        for (i = 0; i < num_clients; i++)    
+         {     
+             if (ip_address == ip_address)       
+                {            
+                strcpy(clients[i].gateway, gateway);       
+                strcpy(clients[i].name, name);           
+              	printf("Client updated successfully.\n");    
+                                               
+                return;        }  
+         }
+                                                    
+	printf("Client with ID %s not found.\n", ip_address); 
+       } 
+                                                    
+                                                    
+                                                    
+                                                    
+                                                    
+                                                    // Delete an existing client 
+void delete_client(char* ip_address) 
+     {    int i;  
+          for (i = 0; i < num_clients; i++) 
+              {        
+                 if (ip_address == ip_address)  
+                    {   
+                       clients[i] = clients[num_clients - 1];  
+                       num_clients--;           
+                       printf("Client deleted successfully.\n");             
+                       return;        
+                       }    
+                       }   
+          printf("Client with ID %s not found.\n", ip_address); 
+          }  
+                                               
+// function to display the current list of clients in the array 
+void display_clients() 
+{  
+
+    int i;    
+    printf("Current list of clients:\n"); 
+    for (i = 0; i < num_clients; i++) 
+        {        printf("IP_Address: %s, GATEWAY: %s, OIF: %s\n",clients[i].ip_address, clients[i].gateway,clients[i].name); 
+        } 
+}  
+                                                                                  
+int main() {   
+// sample usage of the functions      
+	while(1){ 
+	printf("Routing Management Table\n"); 
+        printf("1. Create\n");   
+        printf("2. Update\n");  
+        printf("3. Delete\n");  
+        printf("4. Display\n"); 
+        printf("Enter your choice: ");  
+        
+        int choice;   
+        scanf("%d", &choice);  
+        int c=0; 
+        
+        switch (choice)    
+             {            
+             case 1: 
+             {   
+             	add_client("192.168.1.1", "10.1.1.1", "Ethernet 1");            
+             	break;            }                       
+                                                                                                             
+             case 2: 
+             {            
+             	update_client("192.168.1.1", "10.1.2.1", "Ethernet 2");            
+             	break;            }                       
+                                                                                             
+             case 3: 
+             {            
+             	delete_client("192.168.1.1");            
+             	break;            }                        
+                                                                                                             
+             case 4: 
+             {                        
+             	display_clients();                        
+             	break;            }                       
+                                                                                                               
+             default:    
+             	printf("Invalid Input\n");            
+             	break;    }    
+                                                                                                                       
+//add_client(1, "Client 1", "192.168.0.1");    
+//add_client(2, "Client 2", "192.168.0.2");    
+//display_clients();    
+//update_client(1, "Client 1 Updated", "192.168.0.3");    
+//display_clients();    
+//delete_client(2);    
+//display_clients();      
+                                                                                                                       
+                }    
+         return 0; 
+         }
+	 
+	
+	
+//output
+
+sadashiv@sadashiv-VirtualBox:~/linux Assingment$ gcc four.c -o l
+sadashiv@sadashiv-VirtualBox:~/linux Assingment$ ./l
+Routing Management Table
+1. Create
+2. Update
+3. Delete
+4. Display
+Enter your choice: 1
+Client added successfully.
+Routing Management Table
+1. Create
+2. Update
+3. Delete
+4. Display
+Enter your choice: 4
+Current list of clients:
+IP_Address: 192.168.1.1, GATEWAY: 10.1.1.1, OIF: Ethernet 1
+Routing Management Table
+1. Create
+2. Update
+3. Delete
+4. Display
+Enter your choice: 1
+Client added successfully.
+Routing Management Table
+1. Create
+2. Update
+3. Delete
+4. Display
+Enter your choice: 4
+Current list of clients:
+IP_Address: 192.168.1.1, GATEWAY: 10.1.1.1, OIF: Ethernet 1
+IP_Address: 192.168.1.1, GATEWAY: 10.1.1.1, OIF: Ethernet 1
+Routing Management Table
+1. Create
+2. Update
+3. Delete
+4. Display
+Enter your choice: 
+
+
 
 
 
